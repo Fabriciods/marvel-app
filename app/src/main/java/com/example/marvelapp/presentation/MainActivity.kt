@@ -1,12 +1,13 @@
-package com.example.marvel_app.presentation
+package com.example.marvelapp.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import com.example.marvel_app.R
-import com.example.marvel_app.databinding.ActivityMainBinding
+import androidx.navigation.ui.setupWithNavController
+import com.example.marvelapp.R
+import com.example.marvelapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
@@ -21,9 +22,20 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
 
         navController = navHostFragment.navController
+
+        binding.bottomNavMain.setupWithNavController(navController)
+
         appBarConfiguration = AppBarConfiguration(
-            setOf()
+            setOf(R.id.aboutFragment,R.id.favoritesFragment, R.id.charactersFragment)
         )
+
+        binding.toolbarApp.setupWithNavController(navController,appBarConfiguration )
+
+        navController.addOnDestinationChangedListener{_, destination, _ ->
+            val isTopLevelDestination = appBarConfiguration.topLevelDestinations.contains(destination.id )
+            if (!isTopLevelDestination)
+                binding.toolbarApp.setNavigationIcon(R.drawable.ic_back)
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-package com.example.marvel_app
+package com.example.marvelapp
 
 import org.junit.Test
 
