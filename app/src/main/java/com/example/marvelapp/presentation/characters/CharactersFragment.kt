@@ -5,16 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.core.domain.model.Character
 import com.example.marvelapp.R
 import com.example.marvelapp.databinding.FragmentCharactersBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CharactersFragment : Fragment() {
 
     private lateinit var binding: FragmentCharactersBinding
     private val charactersAdapter = CharactersAdapter()
+    private val viewModel: CharactersViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,15 +31,12 @@ class CharactersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initCharacters()
 
-        charactersAdapter.submitList(
-            listOf(
-                Character("3D-Man","https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
-                Character("3D-Man","https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
-                Character("3D-Man","https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg")
-            )
-        )
+        lifecycleScope.launch {
+            viewModel.characterPagingData("").collect { pagingData ->
+                charactersAdapter.submitData(pagingData)
+            }
+        }
     }
-
     private fun initCharacters(){
         binding.recyclerCharacters.run{
             setHasFixedSize(true)
