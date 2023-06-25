@@ -119,4 +119,6 @@ dependencies {
     // Other Libs
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation "androidx.datastore:datastore-preferences:1.1.0-alpha04"
+
+    testImplementation project(":testing")
 }
